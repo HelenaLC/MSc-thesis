@@ -1,4 +1,4 @@
-# Differential Analysis of scRNA-seq data with complex experimental designs
+# MSc thesis on "Differential Analysis of scRNA-seq data with complex experimental designs"
 
 ## contents
 
