@@ -1,4 +1,4 @@
-# MSc thesis on "Differential Analysis of scRNA-seq data with complex experimental designs"
+<h1/> MSc thesis on "Differential Analysis of scRNA-seq data with complex experimental designs" <h1/>
 
 ## contents
 
