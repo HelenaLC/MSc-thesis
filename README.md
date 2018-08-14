@@ -1,6 +1,6 @@
 ### Differential Analysis of scRNA-seq data with complex experimental designs
 
-### _contents_
+### __contents__
 
 - **fda:** forked repository of the `FDA` package w/ modified code of `tperm.fd()` to decrease runtime.
 - **scDD:** forked repository of the `scDD` package w/ modified version of `simulateSet()` to prevent repeated running of `findIndex()`.
