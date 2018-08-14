@@ -1,5 +1,5 @@
-# MSc-thesis on: \\
-# Differential Analysis of scRNA-seq data \\
+# MSc-thesis on: <\br>
+# Differential Analysis of scRNA-seq data <\br>
 # with complex experimental designs
 
 ### contents
