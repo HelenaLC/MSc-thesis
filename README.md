@@ -9,9 +9,7 @@
 
 ### scripts
 
-script | description | figures
-:------|:------------|:-------
-`dd_patterns` | schematic of differential distribution patterns | dd_paterns
-`scDD_sim_ex` | exemplary `scDD` simulation | scDD_sim_ex-med_exprs, scDD_sim_ex-expr_profiles
-`scDD_null_sim` | null simulation | scDD_null_sim
+- `dd_patterns`: schematic of differential distribution patterns (dd_paterns)
+- `scDD_sim_ex`: exemplary `scDD` simulation (scDD_sim_ex-med_exprs, scDD_sim_ex-expr_profiles)
+`scDD_null_sim`: null simulation (scDD_null_sim)
 
