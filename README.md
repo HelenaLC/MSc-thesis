@@ -7,8 +7,6 @@
 - **scripts:** R code to reproduce all analyses & figures.
 - **results:** figures produced by scripts.
 
----
-
 ### scripts
 
 - **dd_patterns**: schematic of differential distribution patterns (**dd_paterns**)
