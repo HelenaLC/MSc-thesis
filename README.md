@@ -8,9 +8,8 @@
 ### packages
 
 - **pkg:** R package containing method wrappers and utilities for plotting & evaluation.
-- **fda:** forked repository of the `FDA` package w/ modified code of `tperm.fd()` to decrease runtime.
-- **scDD:** forked repository of the `scDD` package w/ modified version of `simulateSet()` <br/>
-  to prevent repeated running of `findIndex()` & make simulated counts non-continuous.
+- **fda:** `FDA` package fork w/ modified code of `tperm.fd()` to decrease runtime.
+- **scDD:** `scDD` package fork w/ modified version of `simulateSet()` to prevent repeated running of `findIndex()` & make simulated counts non-continuous.
 
 ### scripts
 
