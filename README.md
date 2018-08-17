@@ -16,6 +16,9 @@
 - **dd_patterns.R**: <br/>
   Generates a schematic of differential distribution patterns <br/>
   (reproduces: *dd_patterns*)
+- **ECDFs.R**: <br/>
+  Generates an exemplary set of ECDFs for a 3 vs. 3 sample comparison. <br/>
+  (reproduces: *ECDFs*)
 - **scDD_sim_ex.R**: 
 <br/>Visualises an exemplary `scDD` simulation <br/>
   (reproduces: *scDD_sim_ex-med_exprs*, *scDD_sim_ex-expr_profiles*)
