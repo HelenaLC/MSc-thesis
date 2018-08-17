@@ -3,7 +3,7 @@
 ### contents
 
 - **scripts:** R code to reproduce all analyses & figures.
-- **results:** figures produced by scripts.
+- **results:** Figures produced by scripts.
 
 ### packages
 
