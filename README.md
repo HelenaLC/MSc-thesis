@@ -11,8 +11,14 @@
 
 - **dd_patterns.R**: <br/>
   Generates a schematic of differential distribution patterns <br/>
-  (reproduces: *dd_paterns*)
-- **scDD_sim_ex**: Visualises an exemplary `scDD` simulation (**scDD_sim_ex-med_exprs**, **scDD_sim_ex-expr_profiles**)
-- **scDD_null_sim**: Evaluates method performances on 3 replicates of a null simulation (**scDD_null_sim**)
-- **diffcyt_runmodes**: Evaluates the performance of `diffcyt` for varying data inputs & summary statistics (**diffcyt_runmodes**)
+  (reproduces: *dd_patterns*)
+- **scDD_sim_ex**: 
+<br/>Visualises an exemplary `scDD` simulation <br/>
+  reproduces: *scDD_sim_ex-med_exprs*, *scDD_sim_ex-expr_profiles*)
+- **scDD_null_sim**: <br/>
+  Evaluates method performances on 3 replicates of a null simulation <br/>
+    *scDD_null_sim*
+- **diffcyt_runmodes**: <br/>
+  Evaluates the performance of `diffcyt` for varying data inputs & summary statistics <br/>
+  *diffcyt_runmodes*
 
