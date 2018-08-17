@@ -9,7 +9,7 @@
 
 ### scripts
 
-- **dd_patterns.R**: 
+- **dd_patterns.R**: \\
   Generates a schematic of differential distribution patterns (reproduces: *dd_paterns*)
 - **scDD_sim_ex**: Visualises an exemplary `scDD` simulation (**scDD_sim_ex-med_exprs**, **scDD_sim_ex-expr_profiles**)
 - **scDD_null_sim**: Evaluates method performances on 3 replicates of a null simulation (**scDD_null_sim**)
