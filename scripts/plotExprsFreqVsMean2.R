@@ -1,3 +1,6 @@
+# plotting function from scater with altered aesthetics
+# (small point & font sizes).
+
 plotExprsFreqVsMean2 <- function (object, freq_exprs, mean_exprs, controls, by_show_single = FALSE, 
     show_smooth = TRUE, show_se = TRUE, ...) {
     if (!is(object, "SingleCellExperiment")) {
