@@ -5,7 +5,7 @@
 # - expression heatmap
 # ------------------------------------------------------------------------------
 
-path <- "results/simDD_ex"
+path <- "results/simDD-sim_ex"
 
 # load packages
 suppressPackageStartupMessages({

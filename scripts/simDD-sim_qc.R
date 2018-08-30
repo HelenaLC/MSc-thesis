@@ -9,6 +9,8 @@
 # - dispersion vs. mean
 # ------------------------------------------------------------------------------
 
+path <- "results/simDD-sim_qc"
+
 # load packages
 suppressPackageStartupMessages({
     library(cowplot)
@@ -63,7 +65,7 @@ p <- plotExplanatoryVariables(sim, variables=vars) +
     labs(y="density") + theme_bw() + pkg:::prettify + 
     theme(aspect.ratio=2/3, legend.key.size=unit(.25,"cm"),
         panel.grid.major=element_line(size=.2, color="lightgrey"))
-ggsave("results/simDD-sim_qc/qc_var_explained.pdf", 
+ggsave(file.path(path, "qc_var_explained.pdf"), 
     plot=p, width=8, height=4.2, unit="cm")
 
 # ------------------------------------------------------------------------------
@@ -77,7 +79,7 @@ p2 <- plotExprsFreqVsMean2(koh) + labs(title="Koh et al.", y=NULL) + pkg:::prett
     scale_x_continuous(limits=c(0,15), breaks=seq(0,15,5), expand=c(.1,0)) +
     scale_y_continuous(limits=c(0,100), breaks=seq(0,100,20), expand=c(.1,0))
 p <- plot_grid(p1, p2, align="v")
-ggsave("results/simDD-sim_qc/qc_expr_freq_vs_mean.pdf",
+ggsave(file.path(path, "qc_expr_freq_vs_mean.pdf"),
     plot=p, width=12, height=6, unit="cm")
 
 # ------------------------------------------------------------------------------
@@ -91,8 +93,8 @@ p2 <- plotHighestExprs(koh, n=25, colour_cells_by=NULL) +
     theme_bw() + pkg:::prettify +
     theme(axis.text.y=element_text(size=5), plot.title=element_text(size=7))
 p <- plot_grid(p1, p2, align="v")
-ggsave(plot=p, "results/simDD-sim_qc/qc_top_expr.pdf", 
-    width=12, height=5.6, unit="cm")
+ggsave(file.path(path, "qc_top_expr.pdf"), 
+    plot=p, width=12, height=5.6, unit="cm")
 
 # ------------------------------------------------------------------------------
 # distribution of library sizes
@@ -116,7 +118,7 @@ p2 <- ggplot(df_koh, aes(x=x, y=..ncount..)) +
     theme_classic() + pkg:::prettify + theme(aspect.ratio=1/4,
         axis.text.x=element_text(angle=30, hjust=1, vjust=1))
 p <- plot_grid(p1, p2, align="v")
-ggsave("results/simDD-sim_qc/qc_lib_sizes.pdf", 
+ggsave(file.path(path, "qc_lib_sizes.pdf"), 
     plot=p, width=14, height=3.4, unit="cm")
 
 # ------------------------------------------------------------------------------
@@ -146,5 +148,5 @@ p2 <- ggplot() +
     theme_bw() + pkg:::prettify + theme(
         panel.grid.major=element_line(size=.2, color="lightgrey"))
 p <- plot_grid(p1, p2, align="v")
-ggsave("results/simDD-sim_qc/qc_disp_vs_mean.pdf", 
+ggsave(file.path(path, "qc_disp_vs_mean.pdf"), 
     plot=p, width=12, height=6.2, unit="cm")
