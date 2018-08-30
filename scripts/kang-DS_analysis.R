@@ -18,16 +18,18 @@ suppressPackageStartupMessages({
     library(reshape2)
     library(scater)
     library(SingleCellExperiment)  
+    library(UpSetR)
 })
 
 # load data
 daf <- readRDS(file.path(path, "kang_daf.rds"))
 colData(daf)$marker_class <- "state" # make sure to check all genes
+cluster_ids <- levels(cluster_ids(daf))
+n_clusters <- length(cluster_ids)
 
 # initialise results
 methods <- pkg:::methods
 methods <- c(paste(rep(methods[1:2], each=2), c("meanNormcounts", "meanExprs"), sep="_"), methods[-c(1:2)])
-n_clusters <- nlevels(cluster_ids(daf))
 pvals <- matrix(NA,
     nrow=length(state_markers(daf))*n_clusters, ncol=length(methods),
     dimnames=list(NULL, methods))
@@ -44,13 +46,13 @@ pvals[,6] <- runEdgeR(daf, method="normCounts")$p_val
 pvals[,7] <- runEdgeR(daf, method="scaledCPM" )$p_val
 
 write.csv(pvals, file.path(path, "kang_pvals.csv"))
-
+# ------------------------------------------------------------------------------
 pvals <- read.csv(file.path(path, "kang_pvals.csv"), 
     header=TRUE, row.names=1, check.names=FALSE)
 
 # reorder & split by cluster
 pvals <- data.frame(pvals, check.names=FALSE)
-pvals$cluster_id <- rep(levels(cluster_ids(daf)), length(state_markers(daf)))
+pvals$cluster_id <- rep(cluster_ids, length(state_markers(daf)))
 o <- sapply(seq_len(n_clusters), function(i) seq(i, nrow(pvals), n_clusters))
 pvals <- pvals[o, ]
 rownames(pvals) <- NULL
@@ -72,7 +74,7 @@ es <- data.table(es, cluster_id=cluster_ids(daf))
 es <- split(es, by="cluster_id", keep.by=FALSE)
 means <- sapply(es, colMeans)
 colnames(means) <- unique(cluster_ids(daf))
-means <- means[, levels(cluster_ids(daf))]
+means <- means[, cluster_ids]
 
 # filter genes below mean 1
 gs_keep <- apply(means, 2, function(gs) rownames(means)[gs >= 1])
@@ -82,28 +84,57 @@ s <- setNames(lapply(seq_along(s), function(k)
         s[[k]][[m]][keep]
     }), methods)), names(s))
 
-# comparison w/ publication results
 # ------------------------------------------------------------------------------
-
+# aesthetics for plotting
 method_colors <- pkg:::method_colors
 method_colors <- c(method_colors[1:2], c("purple3", "plum"), method_colors[-c(1:2)])
 names(method_colors)[1:4] <- methods[1:4]
 cluster_colors <- CATALYST:::cluster_cols[seq(1,20,2)[-c(8,9)]]
 
+# overlap b/w methods
+# ------------------------------------------------------------------------------
+
+unique_gs <- lapply(s, unlist)
+data <- setNames(lapply(seq_len(n_clusters), function(k)
+    matrix(0, nrow=length(methods), ncol=length(unique_gs[[k]]),
+        dimnames=list(methods, unique_gs[[k]]))), cluster_ids)
+for (k in cluster_ids) {
+    for (m in methods) {
+        gs <- s[[k]][[m]]
+        data[[k]][m, gs] <- 1
+    }
+}
+data <- lapply(data, t)
+data <- lapply(data, data.frame, check.names=FALSE)
+for (k in cluster_ids) {
+    pdf(file.path(path, sprintf("kang-upset_%s.pdf", k)),
+        width=14/2.53, height=6/2.53, onefile=FALSE)
+    upset(data[[k]], sets=rev(methods), nintersects=NA, mb.ratio=c(.6,.4), 
+        sets.x.label="# DE genes", mainbar.y.label="# intersecting\ngenes",
+        keep.order=TRUE, point.size=.6, text.scale=.8, line.size=.4,
+        matrix.color="royalblue", main.bar.color="darkblue", sets.bar.color="darkblue",
+        shade.color="grey", shade.alpha=.2, matrix.dot.alpha=.8)
+    dev.off()
+}
+
+# comparison w/ publication results
+# ------------------------------------------------------------------------------
+
 # read in cell-type specific DE genes
 de_gs <- lapply(seq_len(n_clusters), function(i) {
-    tbl <- readxl::read_xlsx("kang/de_genes.xlsx", sheet=i)
+    tbl <- readxl::read_xlsx("../thesis/kang/de_genes.xlsx", sheet=i)
     tbl <- data.frame(tbl, row.names=1)
 })
 # reorder
-names(de_gs) <- levels(cluster_ids(daf))[c(8,6,7,5,1,4,3,2)]
-de_gs <- de_gs[levels(cluster_ids(daf))]
+de_gs <- de_gs[c(5,8,7,6,4,2,3,1)]
+names(de_gs) <- cluster_ids
+de_gs <- de_gs[cluster_ids]
 
 # plot nb. of DE genes by cluster
 # & fraction of overlapping genes
 df <- data.frame(t(sapply(s, sapply, length)), row.names=NULL, check.names=FALSE)
 df <- df/sapply(de_gs, nrow)
-df$cluster_id <- levels(cluster_ids(daf))
+df$cluster_id <- cluster_ids
 df <- melt(df, id.var="cluster_id")
 df$value[df$value > 2] <- 2
 p1 <- ggplot(df, aes(x=variable, y=value, fill=variable)) +
@@ -131,7 +162,7 @@ overlap <- sapply(seq_len(n_clusters), function(k)
     length(x) / length(gs)
 }))
 rownames(overlap) <- methods
-colnames(overlap) <- levels(cluster_ids(daf))
+colnames(overlap) <- cluster_ids
 overlap <- melt(overlap)
 overlap$value <- overlap$value
 p2 <- ggplot(overlap, aes(x=Var1, y=value, fill=Var1)) +
@@ -188,12 +219,12 @@ ggsave(plot=p, width=14, height=7.6, unit="cm",
 # expr. heatmap for undetected genes w/ lowest p-values
 
 n <- 10
-diff <- sapply(seq_len(n_clusters), function(k) {
-        inds <- !rownames(de_gs[[k]]) %in% unlist(s[[k]])
+diff <- sapply(cluster_ids, function(k) {
+        inds <- which(!rownames(de_gs[[k]]) %in% unlist(s[[k]]))
         top <- order(de_gs[[k]]$padj[inds])[seq_len(n)]
-        rownames(de_gs[[k]])[top]
+        rownames(de_gs[[k]])[inds[top]]
 })
-colnames(diff) <- levels(cluster_ids(daf))
+colnames(diff) <- cluster_ids
 
 es <- assays(daf)$exprs[, c(diff)]
 df <- data.frame(es, cluster_id=cluster_ids(daf), sample_id=sample_ids(daf))
@@ -203,12 +234,12 @@ for (i in seq_along(df)) {
     df[[i]] <- data.frame(df[[i]], row.names=1)
     df[[i]] <- t(df[[i]][, diff[, names(df)[i]]])
 }
-df <- df[levels(cluster_ids(daf))]
+df <- df[cluster_ids]
 df <- do.call(rbind, df)
 
 row_anno <- rowAnnotation(
-    df=data.frame(cluster_id=factor(rep(levels(cluster_ids(daf)), each=n)), check.names=FALSE),
-    col=list("cluster_id"=setNames(cluster_colors, levels(cluster_ids(daf)))),
+    df=data.frame(cluster_id=factor(rep(cluster_ids, each=n)), check.names=FALSE),
+    col=list("cluster_id"=setNames(cluster_colors, cluster_ids)),
     annotation_legend_param=list(
         title_gp=gpar(fontsize=8, fontface="bold", lineheight=.8),
         labels_gp=gpar(fontsize=6)))
@@ -219,7 +250,7 @@ hm <- Heatmap(
     column_order=levels(sample_ids(daf)),
     cluster_rows=FALSE, cluster_columns=FALSE,
     column_title="sample_id", column_title_side="bottom",
-    split=rep(levels(cluster_ids(daf)), each=n), gap=unit(.5, "cm"),
+    split=rep(cluster_ids, each=n), gap=unit(.5, "cm"),
     combined_name_fun=NULL,
     column_title_gp=gpar(fontsize=8, fontface="bold"),
     row_names_gp=gpar(fontsize=6),
@@ -245,10 +276,10 @@ diff <- setNames(lapply(seq_len(n_clusters), function(k) {
         top <- order(ps, decreasing=TRUE, na.last=TRUE)[seq_len(n)]
         rownames(de_gs[[k]])[top]
     }), methods)
-}), levels(cluster_ids(daf)))
+}), cluster_ids)
 
 exprs <- assays(daf)$exprs[, unique(unlist(diff))]
-dfs <- setNames(lapply(levels(cluster_ids(daf)), function(k) {
+dfs <- setNames(lapply(cluster_ids, function(k) {
     inds <- cluster_ids(daf) == k
     es <- exprs[inds, unlist(diff[[k]])]
     df <- data.frame(es, sample_id=sample_ids(daf)[inds])
@@ -256,10 +287,10 @@ dfs <- setNames(lapply(levels(cluster_ids(daf)), function(k) {
     df <- t(data.frame(df, row.names=1))
     rownames(df) <- gsub("\\.+[0-9]", "", rownames(df))
     return(df)
-}), levels(cluster_ids(daf)))
+}), cluster_ids)
 
 split <- anno_df <- factor(rep(methods, each=n), levels=methods)
-for (k in levels(cluster_ids(daf))) {
+for (k in cluster_ids) {
     pdf(file.path(path, sprintf("kang_highest_pvals_%s.pdf", k)),
         width=14/2.53, height=20/2.53)
     row_anno <- rowAnnotation(
