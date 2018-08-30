@@ -1,0 +1,26 @@
+Package: pkg
+Type: Package
+Title: Differential analysis for scRNA-seq data with complex experimental designs
+Version: 0.1.0
+Author: Helena L. Crowell <crowellh@student.ethz.ch>
+Maintainer: Helena L. Crowell <crowellh@student.ethz.ch>
+Description: ...
+Imports: BiocGenerics, CATALYST, data.table, diffcyt, dplyr, edgeR, fda, ggplot2, gtools, limma, magrittr, matrixStats, methods, RColorBrewer, reshape2, S4Vectors, scater, scDD, scran, SingleCellExperiment, stats, SummarizedExperiment, tidyr, zeallot
+Depends: R (>= 3.5)
+License: GPL (>=2)
+Encoding: UTF-8
+LazyData: TRUE
+RoxygenNote: 6.1.0
+Collate: 
+    'AllGenerics.R'
+    'calcMeans.R'
+    'data.R'
+    'helpers.R'
+    'utils.R'
+    'plotPerf.R'
+    'runDiffcyt.R'
+    'runEdgeR.R'
+    'runFDA.R'
+    'simDD.R'
+    'simDD2.R'
+    'simulateSet.R'
