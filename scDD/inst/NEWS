@@ -1,0 +1,70 @@
+Changes in Version 1.3.4 (2018-03-26)
+______________________________________
+
+o The test for differences in proportion of zeroes now uses the Wald test 
+  p-value instead of the likelihood ratio. This will give very similar results,
+  but the Wald test is slightly more conservative.
+
+Changes in Version 1.3.3 (2018-03-23)
+______________________________________
+
+o An option has been added to skip the categorization step if only intereseted
+  significance of difference. This will speed up computation.
+  
+o The testing zeroes step and the KS test have been parallelized to speed up
+  computation.
+
+Changes in Version 1.1.7 (2017-10-23)
+_____________________________________
+
+o A parameter 'level' was added to the main 'scDD' function which allows the 
+  user to control the significance level used as the cutoff for considering a 
+  gene to be differentially distributed. Previously it was fixed at 0.05 (now 
+  the default value).
+
+o Two columns were added to the results object that contain (1) an overall 
+  combined p-value (via Fisher's method) for nonzero and zero differences, and 
+  (2) Benjamini-Hochberg adjusted version of (1).
+
+o If `testZeroes` is FALSE, the columns with p-values for the test of 
+  differential dropout are no longer included. Previously they held NA values.
+
+o If `testZeroes` is TRUE, all zero test p-values are included in the output. 
+  Previously, only the tests where the nonzero test was not significant were 
+  reported.
+
+Changes in Version 1.1.5 (2017-09-27)
+_____________________________________
+
+o The input and output object of the main scDD function has been changed from 
+  SummarizedExperiment to SingleCellExperiment to increase interoperability 
+  among other Bioconductor packages
+
+o The simulateSet function now returns a SingleCellExperiment object 
+  (previously it returned an object in list format)
+
+o The preprocess function now takes as input a SingleCellExperiment object 
+  instead of a list of data frames
+
+Changes in Version 1.0.0 (2017-04-23)
+_____________________________________
+
+o This is the Bioconductor 3.5 Release version
+
+o scDD is a package for identifying differentially distributed genes in 
+  single-cell RNA-seq data. It is designed to detect differences in expression
+  that are more complex than a simple mean shift, including:
+
+  - traditional differential expression (DE)
+
+  - differential modality (DM)
+
+  - differential proportion of cells in each state (DP)
+
+  - both differential modality and differential proportion (DB)
+
+Changes in Version 0.99.0 (2016-12-07)
+______________________________________
+
+o Initial Bioconductor submission version.
+
